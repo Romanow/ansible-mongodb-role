@@ -1,0 +1,10 @@
+{{ mongodb.log_path }}/mongodb.log {
+  daily
+  rotate 7
+  missingok
+  notifempty
+  dateext
+  dateformat -%Y-%m-%d
+  compress
+  create 0644 mongodb mongodb
+}

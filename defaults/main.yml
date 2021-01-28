@@ -1,0 +1,24 @@
+---
+# file: roles/mongodb/defaults/main.yml
+mongodb_version: 4.4
+
+mongodb_port: 27017
+mongodb_user: mongodb
+mongodb_group: mongodb
+
+mongodb_replica_set_enabled: no
+mongodb_replica_set_name: rs0
+mongodb_replica_set_members: []
+
+mongodb_key_file: /etc/mongodb.key
+mongodb_data_path: /var/lib/mongodb/
+mongodb_log_path: /var/log/mongodb/
+mongodb_home_dir: /home/ansible
+
+admin:
+  name: superuser
+  password: root
+  roles:
+    - root
+
+users: []

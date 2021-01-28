@@ -1,0 +1,116 @@
+---
+# file: roles/mongodb/tasks/configure.yml
+- name: Configure key file
+  block:
+    - name: Check if keyfile already created
+      stat:
+        path: "{{ mongodb_key_file }}"
+      register: keyfile_created
+
+    - name: Generate keyfile
+      shell: openssl rand -base64 756
+      register: encrypted_result
+      run_once: yes
+      when: not keyfile_created.stat.exists
+      tags: configure
+
+    - name: Write key to file
+      become: yes
+      copy:
+        content: "{{ encrypted_result.stdout }}"
+        dest: "{{ mongodb_key_file }}"
+        owner: "{{ mongodb_user }}"
+        group: "{{ mongodb_group }}"
+        mode: "0400"
+        remote_src: yes
+      when: not keyfile_created.stat.exists
+  tags: configure
+
+- name: Configure MongoDB
+  become: yes
+  template:
+    src: mongod.conf.j2
+    dest: /etc/mongod.conf
+    owner: "{{ mongodb_user }}"
+    group: "{{ mongodb_group }}"
+    mode: "0644"
+  vars:
+    replication: no
+  tags: configure
+
+- name: Restart MongoDB
+  become: yes
+  service:
+    name: mongod
+    state: restarted
+
+- name: Configure logrotate
+  become: yes
+  template:
+    src: logrotate.conf.j2
+    dest: /etc/logrotate.d/mongodb
+  tags: configure
+
+- block:
+    - name: Check if admin user already created
+      stat:
+        path: "{{ home_dir }}/.admin_created"
+      register: admin_created
+    - name: Create admin user
+      community.mongodb.mongodb_user:
+        database: admin
+        name: "{{ admin.name }}"
+        password: "{{ admin.password }}"
+        state: present
+        roles: "{{ admin.roles }}"
+      when: not admin_created.stat.exists
+    - name: Mark that admin user created
+      file:
+        dest: "{{ home_dir }}/.admin_created"
+        state: touch
+  when: "'primary' in group_names"
+  tags: configure
+
+- block:
+    - name: Enable replication
+      become: yes
+      template:
+        src: mongod.conf.j2
+        dest: /etc/mongod.conf
+        owner: "{{ mongodb_user }}"
+        group: "{{ mongodb_group }}"
+        mode: "0644"
+      vars:
+        replication: yes
+    - name: Restart MongoDB
+      become: yes
+      service:
+        name: mongod
+        state: restarted
+    - name: Create ReplicaSet rs0
+      community.mongodb.mongodb_replicaset:
+        login_user: "{{ admin.name }}"
+        login_password: "{{ admin.password }}"
+        replica_set: "{{ mongodb_replica_set_name }}"
+        members: "{{ mongodb_replica_set_members }}"
+      when: "'primary' in group_names"
+    - name: Wait for 30 seconds to configure ReplicaSet
+      wait_for:
+        timeout: 30
+      delegate_to: localhost
+  when: mongodb_replica_set_enabled
+  tags: configure
+
+- name: Create users
+  community.mongodb_mongodb_user:
+    login_user: "{{ admin.name }}"
+    login_password: "{{ admin.password }}"
+    database: "{{ item.database }}"
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    roles: "{{ item.roles }}"
+    state: present
+  with_items:
+    - "{{ users }}"
+  when: "'primary' in group_names"
+  tags: configure

@@ -1,0 +1,11 @@
+---
+# file: roles/mongodb/meta/main.yml
+galaxy_info:
+  role_name: mongodb
+  author: Romanov Alex <romanowalex@mail.ru>
+  license: EULA
+  platforms:
+    - name: Ubuntu
+      versions:
+        - 20.04
+allow_duplicates: false

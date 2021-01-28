@@ -1,0 +1,24 @@
+net:
+  port: {{ mongodb_port }}
+  bindIp: localhost,{{ ansible_host }}
+
+storage:
+  engine: wiredTiger
+  dbPath: {{ mongodb_data_path }}
+  journal:
+    enabled: true
+
+systemLog:
+  destination: file
+  logAppend: true
+  logRotate: reopen
+  path: {{ mongodb_log_path }}/mongodb.log
+
+security:
+  authorization: enabled
+  keyFile: {{ mongodb_key_file }}
+
+{% if replication %}
+replication:
+  replSetName: {{ mongodb_replica_set_name }}
+{% endif %}

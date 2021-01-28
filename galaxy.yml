@@ -1,0 +1,4 @@
+---
+# file: galaxy.yml
+collections:
+  - community.mongodb
