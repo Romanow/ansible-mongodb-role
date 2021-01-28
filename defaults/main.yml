@@ -13,7 +13,7 @@ mongodb_replica_set_members: []
 mongodb_key_file: /etc/mongodb.key
 mongodb_data_path: /var/lib/mongodb/
 mongodb_log_path: /var/log/mongodb/
-mongodb_home_dir: /home/ansible
+user_home_dir: /home/{{ ansible_user }}
 
 admin:
   name: superuser

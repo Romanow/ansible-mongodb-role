@@ -1,0 +1,13 @@
+---
+name: Test role
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: gofrolist/molecule-action@v2

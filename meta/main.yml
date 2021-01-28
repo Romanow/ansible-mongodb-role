@@ -2,7 +2,9 @@
 # file: roles/mongodb/meta/main.yml
 galaxy_info:
   role_name: mongodb
+  description: Install and configure MongoDB cluster
   author: Romanov Alex <romanowalex@mail.ru>
+  min_ansible_version: 2.10
   license: EULA
   platforms:
     - name: Ubuntu

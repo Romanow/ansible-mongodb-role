@@ -8,7 +8,7 @@
       register: keyfile_created
 
     - name: Generate keyfile
-      shell: openssl rand -base64 756
+      command: openssl rand -base64 756
       register: encrypted_result
       run_once: yes
       when: not keyfile_created.stat.exists
@@ -49,12 +49,13 @@
   template:
     src: logrotate.conf.j2
     dest: /etc/logrotate.d/mongodb
+    mode: 0644
   tags: configure
 
 - block:
     - name: Check if admin user already created
       stat:
-        path: "{{ home_dir }}/.admin_created"
+        path: "{{ user_home_dir }}/.admin_created"
       register: admin_created
     - name: Create admin user
       community.mongodb.mongodb_user:
@@ -66,7 +67,8 @@
       when: not admin_created.stat.exists
     - name: Mark that admin user created
       file:
-        dest: "{{ home_dir }}/.admin_created"
+        dest: "{{ user_home_dir }}/.admin_created"
+        mode: 0644
         state: touch
   when: "'primary' in group_names"
   tags: configure
@@ -102,7 +104,7 @@
   tags: configure
 
 - name: Create users
-  community.mongodb_mongodb_user:
+  community.mongodb.mongodb_user:
     login_user: "{{ admin.name }}"
     login_password: "{{ admin.password }}"
     database: "{{ item.database }}"
