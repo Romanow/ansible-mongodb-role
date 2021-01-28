@@ -20,3 +20,10 @@ lint: |
   set -e
   yamllint .
   ansible-lint
+scenario:
+  converge_sequence:
+    - dependency
+    - lint
+    - create
+    - prepare
+    - converge
