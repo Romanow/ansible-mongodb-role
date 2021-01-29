@@ -1,5 +1,5 @@
 ---
-# file: roles/mongodb/meta/main.yml
+# file: meta/main.yml
 galaxy_info:
   role_name: mongodb
   description: Install and configure MongoDB cluster

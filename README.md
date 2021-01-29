@@ -1,5 +1,7 @@
 # Ansible MongoDB role
 
+![Build Status](https://github.com/Romanow/ansible-mongodb-role/workflows/build/badge.svg)
+
 This role installs MongoDB database and configure security and Replica Set.
 Role installs MongoDB using apt-get 
 

@@ -1,5 +1,5 @@
 ---
-# file: roles/mongodb/tasks/install.yml
+# file: tasks/install.yml
 - name: Add MongoDB repository key
   become: yes
   apt_key:

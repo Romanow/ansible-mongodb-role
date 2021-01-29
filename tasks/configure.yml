@@ -1,5 +1,5 @@
 ---
-# file: roles/mongodb/tasks/configure.yml
+# file: tasks/configure.yml
 - name: Configure key file
   block:
     - name: Check if keyfile already created

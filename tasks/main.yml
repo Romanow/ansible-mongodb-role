@@ -1,5 +1,5 @@
 ---
-# file: roles/mongodb/main.yml
+# file: main.yml
 - name: Install MongoDB
   include_tasks: install.yml
   when: "'mongodb-org' not in ansible_facts.packages"

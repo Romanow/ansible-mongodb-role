@@ -1,5 +1,5 @@
 ---
-# file: roles/mongodb/defaults/main.yml
+# file: defaults/main.yml
 mongodb_version: 4.4
 
 mongodb_port: 27017
