@@ -18,7 +18,7 @@ security:
   authorization: enabled
   keyFile: {{ mongodb_key_file }}
 
-{% if replication %}
+{% if replication == True %}
 replication:
   replSetName: {{ mongodb_replica_set_name }}
 {% endif %}
