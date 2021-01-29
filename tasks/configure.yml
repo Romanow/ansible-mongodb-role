@@ -26,6 +26,11 @@
       when: not keyfile_created.stat.exists
   tags: configure
 
+- name: Check if replication enabled
+  stat:
+    path: "{{ user_home_dir }}/.replication_enabled"
+  register: replication_enabled
+
 - name: Configure MongoDB
   become: yes
   template:
@@ -35,7 +40,7 @@
     group: "{{ mongodb_group }}"
     mode: "0644"
   vars:
-    replication: no
+    replication: replication_enabled.stat.exists
   tags: configure
 
 - name: Restart MongoDB
@@ -96,6 +101,11 @@
         replica_set: "{{ mongodb_replica_set_name }}"
         members: "{{ mongodb_replica_set_members }}"
       when: mongodb_master_node
+    - name: Mark that replication is enabled
+      file:
+        dest: "{{ user_home_dir }}/.replication_enabled"
+        mode: 0644
+        state: touch
     - name: Wait for 30 seconds to configure ReplicaSet
       wait_for:
         timeout: 30
