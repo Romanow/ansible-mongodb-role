@@ -70,7 +70,7 @@
         dest: "{{ user_home_dir }}/.admin_created"
         mode: 0644
         state: touch
-  when: "'primary' in group_names"
+  when: mongodb_master_node
   tags: configure
 
 - block:
@@ -95,7 +95,7 @@
         login_password: "{{ admin.password }}"
         replica_set: "{{ mongodb_replica_set_name }}"
         members: "{{ mongodb_replica_set_members }}"
-      when: "'primary' in group_names"
+      when: mongodb_master_node
     - name: Wait for 30 seconds to configure ReplicaSet
       wait_for:
         timeout: 30
@@ -114,5 +114,5 @@
     state: present
   with_items:
     - "{{ users }}"
-  when: "'primary' in group_names"
+  when: mongodb_master_node
   tags: configure

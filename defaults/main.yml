@@ -6,6 +6,7 @@ mongodb_port: 27017
 mongodb_user: mongodb
 mongodb_group: mongodb
 
+mongodb_master_node: yes
 mongodb_replica_set_enabled: no
 mongodb_replica_set_name: rs0
 mongodb_replica_set_members: []
